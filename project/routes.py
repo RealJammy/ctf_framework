@@ -58,5 +58,9 @@ def account(username):
 
 @project.route("/scoreboard")
 def scoreboard():
-    users = User.query.order_by(User.scores).all()
-    return render_template("scoreboard.html", users=users)
+    users = User.query.order_by(User.score).all()
+    return render_template("scoreboard.html", title="Scoreboard", users=users)
+
+@project.route("/challenges")
+def challenges():
+    return render_template("challenges.html", )

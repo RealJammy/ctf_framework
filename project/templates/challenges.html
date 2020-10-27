@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+  <h1>Challenges</h1>
+  <table class="table table-striped table-hover ">
+  <tbody>
+   {% for category in categories %}
+    <tr>
+      <td>{{ category }}</td>
+        {% for challenge in challenges %}
+	        {% if challenge.category == category %}
+            <td>{{ challenge }}</td>
+          {% endif %}
+	      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
