@@ -1,8 +1,8 @@
-"""create team db
+"""Team table
 
-Revision ID: 5209d6c3a966
+Revision ID: 937b4364b5ac
 Revises: 
-Create Date: 2020-10-27 17:41:52.571279
+Create Date: 2020-10-27 20:11:26.673068
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '5209d6c3a966'
+revision = '937b4364b5ac'
 down_revision = None
 branch_labels = None
 depends_on = None
