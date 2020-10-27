@@ -49,9 +49,10 @@ def register():
         return redirect(url_for("login"))
     return render_template("register.html", title="Register", form=form)
 
-@project.route("/profile")
-def profile():
-    return render_template("profile.html", title="Your Profile")
+@project.route("/profile/<username>")
+def profile(username):
+    team = Team.query.filter_by(username=username).first_or_404()
+    return render_template("profile.html", title="Your Profile", team=team)
 
 @project.route("/scoreboard")
 def scoreboard():

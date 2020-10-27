@@ -13,7 +13,7 @@ class RegistrationForm(FlaskForm):
     username = StringField("Team name", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
-    password1 = PasswordField("Repeat Password", validators=[DataRequired(), EqualTo("password")])
+    password1 = PasswordField("Repeat Password", validators=[DataRequired(), EqualTo("password", message="Passwords must match")])
     submit = SubmitField("Register")
 
     def validate_username(self, username):

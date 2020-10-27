@@ -4,9 +4,10 @@
 <html>
 
 <head>
-{% block title %}
-  {% if title %}Euan's CTF - {{ title }}{% else %}Euan's CTF{% endif %}
-{% endblock %}
+  {% block title %}
+    {% if title %}Euan's CTF - {{ title }}{% else %}Euan's CTF{% endif %}
+  {% endblock %}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 {% block navbar %}
@@ -38,7 +39,7 @@
         </li>
         {% else %}
         <li class="nav-item navbar-right">
-          <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+          <a class="nav-link" href="{{ url_for('profile', username=current_user.username) }}">Profile</a>
         </li>
         <li class="nav-item navbar-right">
           <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
@@ -52,14 +53,15 @@
 {% block content %}
   <body style="padding-top: 70px;">
     <div class="container">
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-info", role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-      {% endwith %}
+      <div class="form-wrapper">
+        {% for message in get_flashed_messages() %}
+          <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
       {% block app_content %}{% endblock %}
+    </div>
     </div>
   </body>
 </html>

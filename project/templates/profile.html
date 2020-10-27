@@ -2,16 +2,9 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-  <div class="container">
-    <div class="row">
-      <div class="col text-center">
-        <button class="btn btn-lg btn-primary" role="button" style="width: 25%;">
-          Create a Team
-        </button>
-        <button class="btn btn-lg btn-secondary" role="button" style="width: 25%;">
-          Join a Team
-        </button>
-      </div>
-    </div>
-  </div>
-  {% endblock %}
+  <img style="margin-left: auto; margin-right: auto; display: block;" src="{{ team.avatar(128) }}"><br>
+  <div style="text-align: center;">
+    <h1>User: {{ team.username }}</h1>
+    <h2>Score: {{ team.score }} </h2>
+  </div><hr>
+{% endblock %}
