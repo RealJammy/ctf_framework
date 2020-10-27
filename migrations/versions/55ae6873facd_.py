@@ -1,8 +1,8 @@
-"""Team table
+"""empty message
 
-Revision ID: 937b4364b5ac
+Revision ID: 55ae6873facd
 Revises: 
-Create Date: 2020-10-27 20:11:26.673068
+Create Date: 2020-10-27 20:30:45.138983
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '937b4364b5ac'
+revision = '55ae6873facd'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,6 +24,7 @@ def upgrade():
     sa.Column('email', sa.String(length=64), nullable=True),
     sa.Column('password_hash', sa.String(length=128), nullable=True),
     sa.Column('score', sa.Integer(), nullable=True),
+    sa.Column('about_us', sa.String(length=400), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_team_email'), 'team', ['email'], unique=True)

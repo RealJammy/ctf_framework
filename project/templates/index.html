@@ -4,5 +4,18 @@
   <h1>Hi, {{ current_user.username }}!</h1>
   {% for post in posts %}
   <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
+
+  <!--
+    TODO:
+      Bootstrap cards for
+        Mention in the dev stage
+        What is this?
+        Who am I?
+        What if I'm new?
+        Rules
+        Prizes (Could be cheeky with warwick accepting me? :smile:)
+        Socials / LInks to sites like Gitbook
+  -->
+
   {% endfor %}
 {% endblock %}
