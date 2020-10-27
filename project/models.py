@@ -22,13 +22,13 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f"User({self.username}, #{self.score})"
 
-class Challenges(db.Model):
+class Team(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    category = db.Column(db.String(64), unique=True)
-    description = db.Column(db.String(500))
-    points = db.Column(db.Integer)
-    flag = db.Column(db.String(64))
+    password_hash = db.Column(db.String(128))
 
-    def __repr__(self):
-        return f"Challenges({self.name}, {self.description}, {self.points})"
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)

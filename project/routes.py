@@ -1,7 +1,7 @@
 from project import project, login, db
-from project.forms import LoginForm, RegistrationForm
-from project.models import User
-from flask import render_template, flash, redirect, url_for, request
+from project.forms import LoginForm, RegistrationForm, TeamRegistration
+from project.models import User, Team
+from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -50,17 +50,27 @@ def register():
         return redirect(url_for("login"))
     return render_template("register.html", title="Register", form=form)
 
-@project.route("/account/<username>")
+@project.route("/create_team", methods=["GET", "POST"])
 @login_required
-def account(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    return render_template("account.html", user=user)
+def create_team():
+    form = TeamRegistration()
+    if form.validate_on_submit():
+        team = Team(name=form.team_name.data)
+        team.set_password(form.password.data)
+        db.session.add(team)
+        db.session.commit()
+        flash("Congratulations, you are now a registered team!")
+    return render_template("create_team.html", title="Create team", form=form)
 
 @project.route("/scoreboard")
 def scoreboard():
     users = User.query.order_by(User.score).all()
     return render_template("scoreboard.html", title="Scoreboard", users=users)
 
-@project.route("/challenges")
+@project.route("/challenges", methods=["GET", "POST"])
 def challenges():
+    form = ChallengeFlagForm()
+    if request.method == "GET":
+        categories = form.get_challenges()
+        completed = UserChallenge.completed_challenges(user_id=current_user.id)
     return render_template("challenges.html", )
