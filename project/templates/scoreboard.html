@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+  {% if users %}
+    <h1>Scoreboard</h1>
+    <ol>
+      {% for user in user %}
+        <li>{{ user.username }} | {{ user.score }}</li>
+      {% endfor %}
+    </ol>
+  {% endif %}
+{% endblock %}
