@@ -30,3 +30,7 @@ class EditProfileForm(FlaskForm):
     username = StringField("Team name", validators=[DataRequired()])
     about_us = TextAreaField("About us", validators=[Length(min=0, max=140)])
     submit = SubmitField("Edit")
+
+class SubmitFlagForm(FlaskForm):
+    flag = StringField("Flag", validators=[DataRequired()])
+    submit = SubmitField("Submit")

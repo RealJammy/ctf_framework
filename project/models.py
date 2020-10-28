@@ -3,6 +3,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from hashlib import md5
 
+association_table = db.Table("association",
+    db.Column("team_id", db.Integer, db.ForeignKey("team.id")),
+    db.Column("flag_id", db.Integer, db.ForeignKey("flag.id"))
+)
+
 @login.user_loader
 def load_user(id):
     return Team.query.get(int(id))
@@ -13,7 +18,8 @@ class Team(UserMixin, db.Model):
     email = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     score = db.Column(db.Integer, default=0)
-    about_us = db.Column(db.String(400))
+    about_us = db.Column(db.String(400), default="Nothing to see here")
+    flags = db.relationship("Flag", secondary=association_table)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -27,3 +33,8 @@ class Team(UserMixin, db.Model):
 
     def __repr__(self):
         return f"Team({self.username}, {self.score})"
+
+class Flag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    hash = db.Column(db.String(64))
+    points = db.Column(db.Integer)
