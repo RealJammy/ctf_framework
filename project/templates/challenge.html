@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block app_content %}
+  <div class="container">
+    <div class="row">
+      {%- for chal in challenges %}
+      <div class="col-sm-6">
+        <div class="card border-dark">
+          <h5 class="card-header text-center">
+            {{ chal.title }}
+          </h5>
+          <div class="card-body">
+            <p class="card-text">
+              Category: {{ chal.category }} <br>
+              Points: {{ chal.points }}
+            </p>
+            <p class="card-text">
+              {{ chal.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+{%- endblock %}

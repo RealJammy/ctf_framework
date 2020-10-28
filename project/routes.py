@@ -1,11 +1,13 @@
 from project import project, login, db
 from project.forms import LoginForm, RegistrationForm, EditProfileForm, SubmitFlagForm
 from project.models import Team, Challenge
+from project.create_db import add_challenges
 from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from hashlib import sha256
 from datetime import datetime
+import os
 
 @project.route("/")
 @project.route("/index")
@@ -76,14 +78,6 @@ def scoreboard():
     users = Team.query.order_by(Team.score.desc()).all()
     return render_template("scoreboard.html", title="Scoreboard", users=users)
 
-# @project.route("/challenges", methods=["GET", "POST"])
-# def challenges():
-#     form = ChallengeFlagForm()
-#     if request.method == "GET":
-#         categories = form.get_challenges()
-#         completed = UserChallenge.completed_challenges(user_id=current_user.id)
-#     return render_template("challenges.html", )
-
 @project.route("/submit", methods=["GET", "POST"])
 @login_required
 def flag_page():
@@ -113,3 +107,10 @@ def flag_page():
             flash(f"Correct, you scored {db_flag.points} points for your team")
             return redirect(url_for(f"profile/{current_user.username}"))
     return render_template("submit.html", title="Submit a flag", form=form)
+
+@project.route("/challenges", methods=["GET", "POST"])
+def challenges():
+    path = os.path.dirname(os.getcwd()) + "/static/challenges/"
+    challenges = Challenge.query.limit(2).all()
+    print(challenges)
+    return render_template("challenge.html", title="Challenges", challenges=challenges)

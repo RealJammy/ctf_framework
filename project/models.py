@@ -38,8 +38,12 @@ class Team(UserMixin, db.Model):
 
 class Challenge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128), unique=True)
+    title = db.Column(db.String(128))
     description = db.Column(db.Text)
     points = db.Column(db.Integer)
     flag_hash = db.Column(db.String(64))
     category = db.Column(db.String(32))
+    file_path = db.Column(db.String(256))
+
+    def __repr__(self):
+        return f"Challenge({self.title}, {self.category})"
