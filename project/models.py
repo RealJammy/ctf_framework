@@ -2,6 +2,7 @@ from project import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from hashlib import md5
+from datetime import datetime
 
 association_table = db.Table("association",
     db.Column("team_id", db.Integer, db.ForeignKey("team.id")),
@@ -20,6 +21,7 @@ class Team(UserMixin, db.Model):
     score = db.Column(db.Integer, default=0)
     about_us = db.Column(db.String(400), default="Nothing to see here")
     flags = db.relationship("Flag", secondary=association_table)
+    last_flag = db.Column(db.DateTime, default=datetime.utcnow())
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -38,3 +40,4 @@ class Flag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     hash = db.Column(db.String(64))
     points = db.Column(db.Integer)
+    category = db.Column(db.String(32))

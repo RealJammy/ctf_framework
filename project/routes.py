@@ -5,6 +5,7 @@ from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from hashlib import sha256
+from datetime import datetime
 
 @project.route("/")
 @project.route("/index")
@@ -53,7 +54,9 @@ def register():
 @project.route("/profile/<username>")
 def profile(username):
     team = Team.query.filter_by(username=username).first_or_404()
-    return render_template("profile.html", title="Your Profile", team=team)
+    categories = Flag.query.group_by(Flag.category).order_by(Flag.category.asc())
+    flags = Team.query.order_by(Team.last_flag).all()
+    return render_template("profile.html", title="Your Profile", team=team, categories=categories, flags=flags)
 
 @project.route("/edit_profile", methods=["GET", "POST"])
 @login_required
@@ -99,6 +102,7 @@ def flag_page():
             return redirect(url_for("flag_page"))
         team.flags.append(db_flag)
         team.score += db_flag.points
+        team.last_flag = datetime.utcnow()
         db.session.add(team)
         db.sesssion.commit()
         flash(f"Correct, you scored {db_flag.points} points for your team")
