@@ -54,9 +54,7 @@ def register():
 @project.route("/profile/<username>")
 def profile(username):
     team = Team.query.filter_by(username=username).first_or_404()
-    categories = Flag.query.group_by(Flag.category).order_by(Flag.category.asc())
-    flags = Team.query.order_by(Team.last_flag).all()
-    return render_template("profile.html", title="Your Profile", team=team, categories=categories, flags=flags)
+    return render_template("profile.html", title="Your Profile", team=team)
 
 @project.route("/edit_profile", methods=["GET", "POST"])
 @login_required
@@ -75,7 +73,7 @@ def edit_profile():
 
 @project.route("/scoreboard")
 def scoreboard():
-    users = Team.query.order_by(Team.score).all()
+    users = Team.query.order_by(Team.score.desc()).all()
     return render_template("scoreboard.html", title="Scoreboard", users=users)
 
 # @project.route("/challenges", methods=["GET", "POST"])
@@ -89,6 +87,12 @@ def scoreboard():
 @project.route("/submit", methods=["GET", "POST"])
 @login_required
 def flag_page():
+
+    sha = sha256(b"fleg").hexdigest()
+    flag = Flag(name="Test", hash=sha, points=10, category="misc")
+    db.session.add(flag)
+    db.session.commit()
+
     form = SubmitFlagForm()
     if form.validate_on_submit():
         flag_hash = sha256(form.flag.data.encode("utf-8")).hexdigest()
@@ -97,14 +101,15 @@ def flag_page():
         if db_flag is None:
             flash("Sorry, the flag you entered is not correct.")
             return redirect(url_for("flag_page"))
-        if db_flag in team.flags:
+        elif db_flag in team.flags:
             flash("You've already entered that flag.")
             return redirect(url_for("flag_page"))
-        team.flags.append(db_flag)
-        team.score += db_flag.points
-        team.last_flag = datetime.utcnow()
-        db.session.add(team)
-        db.sesssion.commit()
-        flash(f"Correct, you scored {db_flag.points} points for your team")
-        return redirect(url_for("profile"))
+        else:
+            team.flags.append(db_flag)
+            team.score += db_flag.points
+            team.last_flag = datetime.utcnow()
+            db.session.add(team)
+            db.session.commit()
+            flash(f"Correct, you scored {db_flag.points} points for your team")
+            return redirect(url_for("profile"))
     return render_template("submit.html", title="Submit a flag", form=form)

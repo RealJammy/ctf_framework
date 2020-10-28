@@ -38,6 +38,7 @@ class Team(UserMixin, db.Model):
 
 class Flag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
     hash = db.Column(db.String(64))
     points = db.Column(db.Integer)
     category = db.Column(db.String(32))

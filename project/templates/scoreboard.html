@@ -16,7 +16,11 @@
         {% for user in users %}
         <tr>
           <td>{{ loop.index }}</td>
-          <td><img src="{{ user.avatar(35) }}"> <b>{{ user.username }}</b></td>
+          <td><img src="{{ user.avatar(35) }}">
+            <b><a href="{{ url_for('profile', username=user.username) }}" class="text-warning">
+              {{ user.username }}
+            </a></b>
+          </td>
           <td>{{ user.score }}</td>
         </tr>
         {% endfor %}

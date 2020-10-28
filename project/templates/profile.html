@@ -20,10 +20,30 @@
       {% endif %}
     </div><hr>
   </div>
-  <div>
-    {% for category in categories %}
-    <h2>{{ category }}</h2>
-    <p>{{ flags }}</p>
-    {% endfor %}
+  <div class="table-responsive">
+    <table class="table table-striped table-dark table-hover table-bordered">
+    <thead>
+      <tr>
+        <th scope="col"><b>#</b></th>
+        <th scope="col"><b>Challenge Completed</b></th>
+        <th scope="col"><b>Points</b></th>
+        <th scope="col"><b>Timestamp</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if team.score != 0 %}
+      {% for i in range(2) %}
+      <tr>
+        <td scope="row">
+          {{ i + 1 }}
+        </td>
+        <td scope="row"><b>{{ team.last_flag }}</b></td>
+        <td scope="row">{{ team.score }}</td>
+        <td scope="row"><b>{{ moment(team.last_flag).format("LLL") }}</b></td>
+      </tr>
+      {% endfor %}
+      {% endif %}
+    </tbody>
+    </table>
   </div>
 {% endblock %}
