@@ -1,6 +1,6 @@
 from project import project, login, db
 from project.forms import LoginForm, RegistrationForm, EditProfileForm, SubmitFlagForm
-from project.models import Team, Flag
+from project.models import Team, Challenge
 from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -11,8 +11,7 @@ from datetime import datetime
 @project.route("/index")
 @login_required
 def index():
-    posts = [{"author": {"username": "Susan"}, "body": "Testing 1 2 3"}]
-    return render_template("index.html", title="Home", posts=posts)
+    return render_template("index.html", title="Home")
 
 @project.route("/login", methods=["GET", "POST"])
 def login():
@@ -63,6 +62,7 @@ def edit_profile():
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_us = form.about_us.data
+        current_user.password = current_user.set_password(form.password.data)
         db.session.commit()
         flash("Your changes have been saved.")
         return redirect(url_for("edit_profile"))
@@ -89,8 +89,8 @@ def scoreboard():
 def flag_page():
 
     sha = sha256(b"fleg").hexdigest()
-    flag = Flag(name="Test", hash=sha, points=10, category="misc")
-    db.session.add(flag)
+    challenge = Challenge(title="Test", description="Some testing stuff", points=10, flag_hash=sha, category="misc")
+    db.session.add(challenge)
     db.session.commit()
 
     form = SubmitFlagForm()
@@ -111,5 +111,5 @@ def flag_page():
             db.session.add(team)
             db.session.commit()
             flash(f"Correct, you scored {db_flag.points} points for your team")
-            return redirect(url_for("profile"))
+            return redirect(url_for(f"profile/{current_user.username}"))
     return render_template("submit.html", title="Submit a flag", form=form)
