@@ -204,8 +204,8 @@ package:com.cyber.cyber2
 euan@euanb26  cyber2  adb shell am start -n "com.cyber.cyber2/com.cyber.cyber2.MainActivity"
 Starting: Intent \{ cmp=com.cyber.cyber2/.MainActivity \}
 ```
-![Apk running](../images/cyber2.png){:height="50%" width="50%"}
-![Apk running](../images/cyber2_correct_pwd.png)
+![Apk running](cyber2.png)
+![Enter in correct password](cyber2_correct_pwd.png)
 
 Going back to the description, it says that the flag is actually encapsulated in `flag{}` ... so that base64 probably isn't the flag. I'm quite interested in that `what_this()` function that was at the top.
 ```java
