@@ -32,16 +32,18 @@
     </thead>
     <tbody>
       {% if team.score != 0 %}
-      {% for i in range(2) %}
-      <tr>
-        <td scope="row">
-          {{ i + 1 }}
-        </td>
-        <td scope="row"><b>{{ team.last_flag }}</b></td>
-        <td scope="row">{{ team.score }}</td>
-        <td scope="row"><b>{{ moment(team.last_flag).format("LLL") }}</b></td>
-      </tr>
-      {% endfor %}
+        {% for _ in team.flags %}
+          {% set challenge_name = team.flags[loop.index - 1] %}
+          {% set points = challenge_name.query.filter_by(title=challenge_name|string).first().points %}
+          <tr>
+            <td scope="row">
+              {{ loop.index }}
+            </td>
+            <td scope="row"><b>{{ challenge_name|string }}</b></td>
+            <td scope="row">{{ points }}</td>
+            <td scope="row"><b>{{ moment(team.last_flag).format("LLL") }}</b></td>
+          </tr>
+        {% endfor %}
       {% endif %}
     </tbody>
     </table>

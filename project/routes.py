@@ -1,6 +1,6 @@
 from project import project, login_manager, db, admin
 from project.forms import LoginForm, RegistrationForm, EditProfileForm, SubmitFlagForm
-from project.models import Team, Challenge, Roles
+from project.models import Team, Challenge
 from project.create_db import add_challenges
 from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import current_user, login_user, logout_user, login_required, AnonymousUserMixin
@@ -22,20 +22,6 @@ class TeamModelView(ModelView):
 
 admin.add_view(TeamModelView(Team, db.session))
 admin.add_view(TeamModelView(Challenge, db.session))
-admin.add_view(TeamModelView(Roles, db.session))
-
-@project.before_first_request
-def add_roles():
-    admin_query = Roles.query.filter_by(name="Admin")
-    team_query = Roles.query.filter_by(name="Team")
-    if admin_query and team_query:
-        return None
-    else:
-        admin_role = Roles(name="Admin")
-        team_role = Roles(name="Team")
-        db.session.add(admin_role)
-        db.session.add(team_role)
-        db.session.commit()
 
 @project.before_first_request
 def create_user():
@@ -44,7 +30,6 @@ def create_user():
     else:
         admin = Team(username="admin", email="admin@example.com")
         admin.set_password("admin")
-        admin.roles = Roles.query.filter_by(name="Admin").all()
         db.session.add(admin)
         db.session.commit()
 
@@ -95,7 +80,6 @@ def register():
     if form.validate_on_submit():
         team = Team(username=form.username.data, email=form.email.data)
         team.set_password(form.password.data)
-        team.roles = Roles.query.filter_by(name="Team").all()
         db.session.add(team)
         db.session.commit()
         flash("Congratulations, you are now a registered team!", "success")
@@ -163,7 +147,14 @@ def challenges():
     if form.validate_on_submit():
         challenge_id = request.form["submit_btn"][6:]
         challenge = Challenge.query.filter_by(id=challenge_id).first()
-        if form.flag.data == challenge.flag:
+        flag = form.flag.data
+        team = Team.query.filter_by(username=current_user.username).first()
+        if flag == challenge.flag:
+            team.flags.append(challenge)
+            team.score += challenge.points
+            team.last_flag = datetime.utcnow()
+            db.session.add(team)
+            db.session.commit()
             flash("Well done, that's correct", "success")
             return redirect(url_for("challenges"))
         else:

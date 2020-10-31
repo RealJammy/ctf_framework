@@ -10,11 +10,6 @@ association_table = db.Table("association",
     db.Column("challenge_id", db.Integer, db.ForeignKey("challenge.id"))
 )
 
-roles_teams_table = db.Table("roles_teams",
-    db.Column("team_id", db.Integer(), db.ForeignKey("team.id")),
-    db.Column("roles_id", db.Integer(), db.ForeignKey("roles.id"))
-)
-
 class Team(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(128), index=True, unique=True)
@@ -25,7 +20,6 @@ class Team(UserMixin, db.Model):
     flags = db.relationship("Challenge", secondary=association_table)
     last_flag = db.Column(db.DateTime, default=datetime.utcnow())
     active = db.Column(db.Boolean(), default=1)
-    roles = db.relationship("Roles", secondary=roles_teams_table, backref="team", lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -50,11 +44,4 @@ class Challenge(db.Model):
     file_path = db.Column(db.String(256))
 
     def __repr__(self):
-        return f"Challenge({self.title}, {self.category})"
-
-class Roles(RoleMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True)
-
-    def __repr__(self):
-        return f"Roles({self.name})"
+        return f"{self.title}"
