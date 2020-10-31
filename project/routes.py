@@ -161,7 +161,5 @@ def flag_page():
 @project.route("/challenges", methods=["GET", "POST"])
 @login_required
 def challenges():
-    path = os.path.dirname(os.getcwd()) + "/static/challenges/"
     challenges = Challenge.query.limit(2).all()
-    print(challenges)
     return render_template("challenge.html", title="Challenges", challenges=challenges)

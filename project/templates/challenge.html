@@ -10,11 +10,21 @@
           </h5>
           <div class="card-body">
             <p class="card-text">
-              Category: {{ chal.category }} <br>
-              Points: {{ chal.points }}
-            </p>
+              <div class="row">
+                <div class="col text-center">
+                  Points: {{ chal.points }}
+                </div>
+                <div class="col text-center">
+                  Category: {{ chal.category }}
+                </div>
+              </div>
+            </p><br>
             <p class="card-text">
               {{ chal.description }}
+            </p>
+            <p class="card-text">
+              {% set path = chal.file_path %}
+              <a href="{{ url_for('static', filename=path) }}">{{ chal.title }}</a>
             </p>
           </div>
         </div>

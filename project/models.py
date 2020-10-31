@@ -45,7 +45,7 @@ class Challenge(db.Model):
     title = db.Column(db.String(128))
     description = db.Column(db.Text)
     points = db.Column(db.Integer)
-    flag_hash = db.Column(db.String(64))
+    flag = db.Column(db.String(64))
     category = db.Column(db.String(32))
     file_path = db.Column(db.String(256))
 
