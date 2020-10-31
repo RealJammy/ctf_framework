@@ -1,13 +1,65 @@
-from project import project, login, db
+from project import project, login_manager, db, admin
 from project.forms import LoginForm, RegistrationForm, EditProfileForm, SubmitFlagForm
-from project.models import Team, Challenge
+from project.models import Team, Challenge, Roles
 from project.create_db import add_challenges
 from flask import render_template, flash, redirect, url_for, request, session
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import current_user, login_user, logout_user, login_required, AnonymousUserMixin
+from flask_admin.contrib.sqla import ModelView
 from werkzeug.urls import url_parse
 from hashlib import sha256
 from datetime import datetime
 import os
+
+class TeamModelView(ModelView):
+    def is_accessible(self):
+        print(f"Logged in as user {current_user.username}")
+        print(f"Need this: {Team.query.filter_by(username='admin').first().username}")
+        print(f"Is user anon?: {current_user.is_anonymous}")
+        if current_user.is_anonymous:
+            return False
+        return current_user.username == Team.query.filter_by(username="admin").first().username
+
+    def _handle_view(self, name):
+        if not self.is_accessible():
+                return redirect(url_for("login"))
+
+admin.add_view(TeamModelView(Team, db.session))
+admin.add_view(TeamModelView(Challenge, db.session))
+admin.add_view(TeamModelView(Roles, db.session))
+
+@project.before_first_request
+def add_roles():
+    admin_query = Roles.query.filter_by(name="Admin")
+    team_query = Roles.query.filter_by(name="Team")
+    if admin_query and team_query:
+        return None
+    else:
+        admin_role = Roles(name="Admin")
+        team_role = Roles(name="Team")
+        db.session.add(admin_role)
+        db.session.add(team_role)
+        db.session.commit()
+
+@project.before_first_request
+def create_user():
+    if Team.query.filter_by(username="admin").first():
+        return None
+    else:
+        admin = Team(username="admin", email="admin@example.com")
+        admin.set_password("admin")
+        admin.roles = Roles.query.filter_by(name="Admin").all()
+        db.session.add(admin)
+        db.session.commit()
+
+@login_manager.user_loader
+def load_user(id):
+    return Team.query.get(int(id))
+
+class Anonymous(AnonymousUserMixin):
+    def __init__(self):
+        self.username = "Guest"
+
+login_manager.anonymous_user = Anonymous
 
 @project.route("/")
 @project.route("/index")
@@ -46,6 +98,7 @@ def register():
     if form.validate_on_submit():
         team = Team(username=form.username.data, email=form.email.data)
         team.set_password(form.password.data)
+        team.roles = Roles.query.filter_by(name="Team").all()
         db.session.add(team)
         db.session.commit()
         flash("Congratulations, you are now a registered team!")
@@ -109,6 +162,7 @@ def flag_page():
     return render_template("submit.html", title="Submit a flag", form=form)
 
 @project.route("/challenges", methods=["GET", "POST"])
+@login_required
 def challenges():
     path = os.path.dirname(os.getcwd()) + "/static/challenges/"
     challenges = Challenge.query.limit(2).all()
