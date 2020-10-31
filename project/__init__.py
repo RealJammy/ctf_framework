@@ -13,6 +13,7 @@ db = SQLAlchemy(project)
 migrate = Migrate(project, db)
 login_manager = LoginManager(project)
 login_manager.login_view = "login"
+login_manager.login_message_category = "warning"
 bootstrap = Bootstrap(project)
 moment = Moment(project)
 project.config["FLASK_ADMIN_SWATCH"] = "cosmo"

@@ -8,6 +8,7 @@
     {% if title %}Euan's CTF - {{ title }}{% else %}Euan's CTF{% endif %}
   {% endblock %}
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/error_style.css">
 </head>
 
 {% block navbar %}
@@ -54,8 +55,8 @@
   <body style="padding-top: 70px;">
     <div class="container">
       <div class="form-wrapper">
-        {% for message in get_flashed_messages() %}
-          <div class="alert alert-warning">
+        {% for category, message in get_flashed_messages(with_categories=True) %}
+          <div class="alert alert-{{ category }} fade show" role="alert">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             {{ message }}
           </div>

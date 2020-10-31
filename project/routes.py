@@ -72,7 +72,7 @@ def login():
     if form.validate_on_submit():
         team = Team.query.filter_by(username=form.username.data).first()
         if team is None or not team.check_password(form.password.data):
-            flash("Invalid username or data", "error")
+            flash("Invalid username or data", "danger")
             return redirect(url_for("login"))
         login_user(team, remember=form.remember_me.data)
         next_page = request.args.get("next")
@@ -98,7 +98,7 @@ def register():
         team.roles = Roles.query.filter_by(name="Team").all()
         db.session.add(team)
         db.session.commit()
-        flash("Congratulations, you are now a registered team!")
+        flash("Congratulations, you are now a registered team!", "success")
         return redirect(url_for("login"))
     return render_template("register.html", title="Register", form=form)
 
@@ -116,7 +116,7 @@ def edit_profile():
         current_user.about_us = form.about_us.data
         current_user.password = current_user.set_password(form.password.data)
         db.session.commit()
-        flash("Your changes have been saved.")
+        flash("Your changes have been saved.", "success")
         return redirect(url_for("edit_profile"))
     elif request.method == "GET":
         form.username.data = current_user.username
@@ -131,12 +131,6 @@ def scoreboard():
 @project.route("/submit", methods=["GET", "POST"])
 @login_required
 def flag_page():
-
-    sha = sha256(b"fleg").hexdigest()
-    challenge = Challenge(title="Test", description="Some testing stuff", points=10, flag_hash=sha, category="misc")
-    db.session.add(challenge)
-    db.session.commit()
-
     form = SubmitFlagForm()
     if form.validate_on_submit():
         flag_hash = sha256(form.flag.data.encode("utf-8")).hexdigest()
@@ -158,8 +152,21 @@ def flag_page():
             return redirect(url_for(f"profile/{current_user.username}"))
     return render_template("submit.html", title="Submit a flag", form=form)
 
+def submit_flag():
+    form = SubmitFlagForm()
+
 @project.route("/challenges", methods=["GET", "POST"])
 @login_required
 def challenges():
-    challenges = Challenge.query.limit(2).all()
-    return render_template("challenge.html", title="Challenges", challenges=challenges)
+    all_challenges = Challenge.query.all()
+    form = SubmitFlagForm()
+    if form.validate_on_submit():
+        challenge_id = request.form["submit_btn"][6:]
+        challenge = Challenge.query.filter_by(id=challenge_id).first()
+        if form.flag.data == challenge.flag:
+            flash("Well done, that's correct", "success")
+            return redirect(url_for("challenges"))
+        else:
+            flash("Invalid flag", "danger")
+            return redirect(url_for("challenges"))
+    return render_template("challenge.html", title="Challenges", challenges=all_challenges, form=form)

@@ -68,7 +68,6 @@ Let's take a look at the `AndroidManifest.xml` file to make sure that nothing wa
 </manifest>
 ```
 So we can see that our main activity is in `<activity android:name="com.cyber.cyber2.MainActivity">` which is normal to see.
-~~That style is a spelling mistake, I accidentally had the packagae name as `Cyber1` instead of `Cyber2`~~
 
 So let's take a look in `MainActivity`
 ```java

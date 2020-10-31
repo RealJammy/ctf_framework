@@ -1,31 +1,50 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
 {% block app_content %}
   <div class="container">
     <div class="row">
       {%- for chal in challenges %}
       <div class="col-sm-6">
         <div class="card border-dark">
-          <h5 class="card-header text-center">
-            {{ chal.title }}
-          </h5>
-          <div class="card-body">
-            <p class="card-text">
-              <div class="row">
-                <div class="col text-center">
-                  Points: {{ chal.points }}
+          <div class="card-header" id="{{ chal.title }}">
+            <h5 class="text-center">
+              <a class="btn btn-link" data-toggle="collapse" href="#collapse{{ chal.title }}">
+                {{ chal.title }}
+              </a>
+            </h5>
+          </div>
+          <div id="collapse{{ chal.title }}" class="collapse fade">
+            <div class="card-body">
+              <p class="card-text">
+                <div class="row">
+                  <div class="col text-center">
+                    Points: {{ chal.points }}
+                  </div>
+                  <div class="col text-center">
+                    Category: {{ chal.category }}
+                  </div>
                 </div>
-                <div class="col text-center">
-                  Category: {{ chal.category }}
-                </div>
+              </p>
+              <p class="card-text">
+                {{ chal.description }}
+              </p>
+              <p class="card-text text-center">
+                {% set path = "challenges/" + chal.file_path %}
+                <a class="btn btn-md btn-warning" role="button" href="{{ url_for('static', filename=path) }}">{{ chal.title }}</a>
+              </p>
+              <div class="col">
+                  <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <p>
+                      {{ form.flag.label }}<br>
+                      {{ form.flag(size=32) }} <!-- Got to dynamically get size of form -->
+                    </p>
+                    {% set id_submit = "submit" + chal.id|string %}
+                    <button class="btn btn-primary" type="submit" name="submit_btn" value={{ id_submit }}>Submit</button>
+                  </form>
               </div>
-            </p><br>
-            <p class="card-text">
-              {{ chal.description }}
-            </p>
-            <p class="card-text">
-              {% set path = chal.file_path %}
-              <a href="{{ url_for('static', filename=path) }}">{{ chal.title }}</a>
-            </p>
+            </div>
           </div>
         </div>
       </div>
