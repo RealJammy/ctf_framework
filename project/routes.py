@@ -12,7 +12,6 @@ import os
 
 class TeamModelView(ModelView):
     def is_accessible(self):
-        print(f"Admin name is {os.getenv('ADMIN_NAME')}")
         if current_user.is_anonymous:
             return False
         return current_user.username == Team.query.filter_by(username=os.getenv("ADMIN_NAME")).first().username
