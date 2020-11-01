@@ -28,21 +28,20 @@
               </p>
               <p class="card-text">
                 {{ chal.description }}
-              </p>
+              </p><br>
               <p class="card-text text-center">
                 {% set path = "challenges/" + chal.file_path %}
                 <a class="btn btn-md btn-warning" role="button" href="{{ url_for('static', filename=path) }}">{{ chal.title }}</a>
               </p>
               <div class="col">
-                  <form action="" method="post">
-                    {{ form.hidden_tag() }}
-                    <p>
-                      {{ form.flag.label }}<br>
-                      {{ form.flag(size=32) }} <!-- Got to dynamically get size of form -->
-                    </p>
+                <form action="" method="post" class="form" role="form">
+                  {{ form.csrf_token() }}
+                  <p>
+                    {{ wtf.form_field(form.flag, class="form-control") }}<br>
                     {% set id_submit = "submit" + chal.id|string %}
                     <button class="btn btn-primary" type="submit" name="submit_btn" value={{ id_submit }}>Submit</button>
-                  </form>
+                  </p>
+                </form>
               </div>
             </div>
           </div>

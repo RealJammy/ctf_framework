@@ -22,7 +22,7 @@ class Team(UserMixin, db.Model):
     active = db.Column(db.Boolean(), default=1)
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password, method="pbkdf2:sha256:4096", salt_length=64)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
