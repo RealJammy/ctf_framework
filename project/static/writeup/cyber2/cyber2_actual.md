@@ -8,10 +8,9 @@ At the end, there is a TL;DR to recap of the steps taken and the techniques lear
 This is quite a long write-up, sorry!
 
 ## Let the write-up begin!
-> Agent, we've been tasked with something ... rather interesting. We've had mission control take a quick scan of the file, and felt that it's probably wise that we get our #1 agent on it ASAP.
-> The file is located here
+>  To start generating some wacky ideas, we're moving away from the simple angr rev and the bypass-of-a -canary-implementing-shellcode pwn. Instead, we're moving towards mobile rev and pwn.
 
-> Tags: rev, pwn
+> Category: binary exploitation (and reverse engineering)
 
 So our description doesn't give us too much info about what the challenge is, nor the name. We're also told that this is both a reverse engineering and binary exploitation challenge, combining two of my strengths together, sweet!
 
