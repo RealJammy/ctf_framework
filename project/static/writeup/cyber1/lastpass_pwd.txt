@@ -1,0 +1,77 @@
+Data Dump from LastPass
+
+HackTheBox (Joined August 2018)
+-> URI to profile: https://www.hackthebox.eu/home/users/profile/58042
+-> username: EuanB26
+-> password: NYas}@ba{5YH8gr
+
+Gitbook:
+-> URI: https://euanb26.gitbook.io
+-> username: euanb26
+-> password: my_Typ3_c0nfus10n_w1ll_BOF_f0r_y0ur_h3ap_f3ng_shui
+
+Github:
+-> URI: https://github.com/EuanB26
+-> username: euanb26
+-> password: g1thub_g1tb00k_g1tl4b_wh1ch_0n3?>:(@~
+
+Cyber Discovery (2017, 2018, 2019, 2020, 2021)
+-> URI: https://joincyberdiscovery.com/
+-> username: euanb26
+-> password: n00b1ng_my_w4y_up
+
+	Tomahawque (Elite 2019)
+	-> URI: https://www.tomahawque.com/profile/EuanB26
+	-> username: EuanB26
+	-> password: d0_w3_r3_u53_z3_p4$$w0rd?
+
+	SANS (Elite 2020 - 98% on CD game, woooooo)
+	-> URI (showcasing GCIH): https://www.youracclaim.com/badges/3e559d21-1582-43ec-a46e-dfeb5ef4f5be/public_url
+	-> Login URI: https://www.sans.org/
+	-> username: euanb
+	-> password: yh_7h15_0n3_5h0uld_b3_pr377y_$3cuR3_43943284893024¬"£$£"$
+
+CyberFirst Advanced
+-> URI: https://www.smallpeicetrust.org.uk/cyberfirst-advanced
+-> username: euanb26
+-> password: d0nt_f34r_3u4n_is_here!!!!><?
+
+CTFtime
+	Personal account
+	-> URI: https://ctftime.org/user/72108
+	-> username: EuanB26 (Using capitals, whoop)
+	-> password: ctf_4r3_4w3s0me_43243243576576
+
+	The WinRaRs (co founded)
+	-> URI: https://ctftime.org/team/113086
+	-> username: The_WinRaRs
+	-> password: screw_you_Crown_yes_plain_text_for_our_message_:)
+
+hackerOne
+-> URI: https://hackerone.com/euanb26?type=user
+-> username: euanb26
+-> password: -g]{u4B}3j&9Z`Vu
+
+School
+-> URI: Do we really need one?
+-> username: 14euanB
+-> password: "' OR '1'='1"
+(Hehe, testing security as we go)
+
+Nationwide work experience with the Pentesting team
+-> URI: https://www.nationwide.co.uk/
+-> username: euanB
+-> password: 6<VbUur*Wn2E"(y?
+
+Warwick 2019 open day + 2020 virtual
+-> URI: https://warwick.ac.uk
+
+Google podcasts (Darknet Diaries, The Social Engineering Podcast, Open Source Security Podcast, Unnamed RE, Kona Edge, Triathlon Taren, Hackable?..)
+-> URI: https://podcasts.google.com/
+-> username: EuanB26@gmail.com
+-> password: g00gl3_15_4lw4y5_w4tch1ng_m0v3_t()_duck_duck_g0_0r_pr0t0nM41l_:)
+
+flag
+-> URI: https://hehe.welldone.com/
+-> username: flagity_flag
+-> password: flag{D0nt_d4t4_dump_4nd_m0ve}

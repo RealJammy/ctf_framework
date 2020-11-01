@@ -315,7 +315,6 @@ puts
 stdin
 printf
 fgets
-memset
 stdout
 ...
 ```
@@ -392,7 +391,6 @@ int main(void) {
   puts("Let me repeat your beat!\n\tYou go first!");
   fflush(stdout);
   while (loop_var == 0) {
-    memset(buf,0,0x100);
     fgets(buf,0x256,stdin);
     printf(buf);
     fflush(stdout);
@@ -400,7 +398,7 @@ int main(void) {
   return 0;
 }
 ```
-And with the source code, we can see some major bugs. `memset` looks fine, however we're getting `0x256` bytes of user input and putting it in a buffer of `256`, seems like someone wasn't paying attention to class. We then don't use `printf` properly, allowing a format string to be passed. Let's just test these hypotheses:
+And with the source code, we can see some major bugs. We're getting `0x256` bytes of user input and putting it in a buffer of `256`, seems like someone wasn't paying attention to class when learning hex vs decimal. `printf` isn't then properly used, allowing a format string to be passed. Let's just test these hypotheses:
 ```bash
 euan@euanb26  assets  ./repeat_your_beat
 Let me repeat your beat!
@@ -419,7 +417,7 @@ AAAAAAAAAAAAAAAAAAA...
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA...
 [1]    29412 segmentation fault (core dumped)  ./repeat_your_beat
 ```
-Correct, so we get a SIGSEGV and a format string vulnerability. So, what are some ways to attack this? We really only are reaching the stack, apart from the `memset()`, so we can't deal with any heap exploits:
+Correct, so we get a SIGSEGV and a format string vulnerability. So, what are some ways to attack this? We really only are reaching the stack so we can't deal with any heap exploits:
 - Due to NX, we can use ROP gadgets
   - ret2libc - just calling `system("/bin/sh")`
   - Using oneGadget
