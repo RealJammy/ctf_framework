@@ -112,33 +112,6 @@ def scoreboard():
     users = Team.query.order_by(Team.score.desc()).all()
     return render_template("scoreboard.html", title="Scoreboard", users=users)
 
-@project.route("/submit", methods=["GET", "POST"])
-@login_required
-def flag_page():
-    form = SubmitFlagForm()
-    if form.validate_on_submit():
-        flag_hash = sha256(form.flag.data.encode("utf-8")).hexdigest()
-        db_flag = Flag.query.filter_by(hash=flag_hash).first()
-        team = Team.query.filter_by(username=current_user.username).first()
-        if db_flag is None:
-            flash("Sorry, the flag you entered is not correct.")
-            return redirect(url_for("flag_page"))
-        elif db_flag in team.flags:
-            flash("You've already entered that flag.")
-            return redirect(url_for("flag_page"))
-        else:
-            team.flags.append(db_flag)
-            team.score += db_flag.points
-            team.last_flag = datetime.utcnow()
-            db.session.add(team)
-            db.session.commit()
-            flash(f"Correct, you scored {db_flag.points} points for your team")
-            return redirect(url_for(f"profile/{current_user.username}"))
-    return render_template("submit.html", title="Submit a flag", form=form)
-
-def submit_flag():
-    form = SubmitFlagForm()
-
 @project.route("/challenges", methods=["GET", "POST"])
 @login_required
 def challenges():
@@ -149,6 +122,9 @@ def challenges():
         challenge = Challenge.query.filter_by(id=challenge_id).first()
         flag = form.flag.data
         team = Team.query.filter_by(username=current_user.username).first()
+        if challenge in team.flags:
+            flash("You've already entered that flag.", "warning")
+            return redirect(url_for("challenges"))
         if flag == challenge.flag:
             team.flags.append(challenge)
             team.score += challenge.points
