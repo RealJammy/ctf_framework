@@ -29,10 +29,12 @@
               <p class="card-text">
                 {{ chal.description }}
               </p><br>
+              {% if chal.file_path is not none %}
               <p class="card-text text-center">
                 {% set path = "challenges/" + chal.file_path %}
                 <a class="btn btn-md btn-warning" role="button" href="{{ url_for('static', filename=path) }}">{{ chal.title }}</a>
               </p>
+              {% else %}{% endif %}
               <div class="col">
                 <form action="" method="post" class="form" role="form">
                   {{ form.csrf_token() }}
@@ -45,7 +47,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div><br>
       </div>
       {% endfor %}
     </div>

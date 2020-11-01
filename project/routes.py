@@ -12,9 +12,10 @@ import os
 
 class TeamModelView(ModelView):
     def is_accessible(self):
+        print(f"Admin name is {os.getenv('ADMIN_NAME')}")
         if current_user.is_anonymous:
             return False
-        return current_user.username == Team.query.filter_by(username="admin").first().username
+        return current_user.username == Team.query.filter_by(username=os.getenv("ADMIN_NAME")).first().username
 
     def _handle_view(self, name):
         if not self.is_accessible():
@@ -25,11 +26,11 @@ admin.add_view(TeamModelView(Challenge, db.session))
 
 @project.before_first_request
 def create_user():
-    if Team.query.filter_by(username="admin").first():
+    if Team.query.filter_by(username=os.getenv("ADMIN_NAME")).first():
         return None
     else:
-        admin = Team(username="admin", email="admin@example.com")
-        admin.set_password("admin")
+        admin = Team(username=os.getenv("ADMIN_NAME"), email=os.getenv("ADMIN_EMAIL"))
+        admin.set_password(os.getenv("ADMIN_PWD"))
         db.session.add(admin)
         db.session.commit()
 
