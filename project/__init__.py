@@ -6,6 +6,7 @@ from flask_bs4 import Bootstrap
 from flask_moment import Moment
 from flask_admin import Admin
 from config import Config
+import os
 
 project = Flask(__name__)
 project.config.from_object(Config)
@@ -19,6 +20,4 @@ moment = Moment(project)
 project.config["FLASK_ADMIN_SWATCH"] = "cosmo"
 admin = Admin(project, template_mode="bootstrap3")
 
-project.run()
-
-from project import routes, models
+from project import models, routes

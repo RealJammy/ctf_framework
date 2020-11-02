@@ -193,6 +193,9 @@ So we can now roughly follow the smali code from `L_0x0038`:
 
 So that's essentially what this program is doing, *or at least what's happening when we load the program up*.
 We can also see it if we push the app to an android phone running a minimum SDK version 20 (as gotten from the `AndroidManifest.xml` file)
+
+# ADB install app on phone missing
+
 ```bash
 euan@euanb26  cyber2  adb devices                                          
 List of devices attached
@@ -209,7 +212,7 @@ Going back to the description, it says that the flag is actually encapsulated in
 ```java
 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(assets.open("encrypted_text.txt"), "UTF-8"));
 ```
-So here, we're opening the file named `encrypted_text.txt` fro the `assets` file, which then the contents are captured in `readLine`, makes sense.
+So here, we're opening the file named `encrypted_text.txt` from the `assets` file, which then the contents are captured in `readLine`, makes sense.
 ```java
 List asList = Arrays.asList(readLine.split("", Integer.parseInt("")));
 ```
@@ -234,7 +237,7 @@ for (int i2 = 0; i2 < asList.size(); i2++) {
 ```
 So we have a for loop repeating from 0 to the input from the file, and it's getting the byte at position `i2` from our 1337 array, which seems to convert it to it's ASCII equivalent.
 
-Ah yes, the gold old XOR. We're appending the xor operation of our input at position `i2` with the 1337 array at position `i2`. And then that's that function decrypted, whoop.
+Ah yes, the good old XOR. We're appending the xor operation of our input at position `i2` with the 1337 array at position `i2`. And then that's that function decrypted, whoop.
 
 Let's take a look at `encrypted_text.txt`:
 ```
@@ -587,7 +590,7 @@ repeat_your_beat encrypted_text.txt
 $ cat encrypted_text.txt
 0x2d,0x10,0x39,0x1c,0x55,0x19,0x7f,0x0,0x58,0x0,0x56,0x7f,0xb,0x5d,...
 ```
-Which if we pass into our decrypt, we get our output!
+Which if we pass into our decryption algorithm that we created beforehand, we get our output!
 
 Wow, what a roller coaster of events! That was rather long, but I hope you enjoyed it :)
 

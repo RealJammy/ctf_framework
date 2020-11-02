@@ -43,7 +43,7 @@ class Anonymous(AnonymousUserMixin):
 login_manager.anonymous_user = Anonymous
 
 @project.route("/")
-@project.route("/index", methods=["GET", "POST"])
+@project.route("/index")
 @login_required
 def index():
     return render_template("index.html", title="Home")
