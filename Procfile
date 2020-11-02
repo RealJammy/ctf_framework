@@ -1,1 +1,2 @@
-web: flask db upgrade; gunicorn project:project
+
+web: flask db upgrade; gunicorn euan-ctf:app
