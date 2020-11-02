@@ -1,2 +1,1 @@
-
-web: flask db upgrade; gunicorn ctf-framework:app
+web: flask db upgrade; gunicorn ctf-framework:project
