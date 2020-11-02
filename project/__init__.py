@@ -19,6 +19,6 @@ moment = Moment(project)
 project.config["FLASK_ADMIN_SWATCH"] = "cosmo"
 admin = Admin(project, template_mode="bootstrap3")
 
-project.run(port=5000)
+project.run()
 
 from project import routes, models
