@@ -1,1 +1,1 @@
-web: gunicorn project:project
+web: gunicorn ctf-framework:project
