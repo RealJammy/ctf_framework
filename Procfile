@@ -1,1 +1,1 @@
-web: gunicorn --chdir project __init__:project
+web: gunicorn project:project
