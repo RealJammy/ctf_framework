@@ -1,1 +1,1 @@
-web: flask run
+web: gunicorn --chdir project __init__:project
