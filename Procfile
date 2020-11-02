@@ -1,1 +1,1 @@
-web: gunicorn project:project --log-file -
+web: flask db upgrade; gunicorn ctf_framework:project
