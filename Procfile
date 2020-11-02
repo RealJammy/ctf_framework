@@ -1,1 +1,1 @@
-web: python3 ctf-framework.py
+web: python3 ctf_framework.py
