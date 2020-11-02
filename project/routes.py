@@ -1,7 +1,6 @@
 from project import project, login_manager, db, admin
 from project.forms import LoginForm, RegistrationForm, EditProfileForm, SubmitFlagForm
 from project.models import Team, Challenge
-from project.create_db import add_challenges
 from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import current_user, login_user, logout_user, login_required, AnonymousUserMixin
 from flask_admin.contrib.sqla import ModelView
