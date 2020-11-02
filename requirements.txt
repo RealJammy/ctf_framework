@@ -13,3 +13,4 @@ Flask_BS4==4.5.3.0
 Flask_Moment==0.10.0
 python-dotenv==0.15.0
 gunicorn
+email_validator
