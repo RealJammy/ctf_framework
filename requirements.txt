@@ -14,5 +14,5 @@ python-dotenv==0.15.0
 gunicorn
 email_validator
 psycopg2
-python-dateutil
+python-dateutil==1.5
 alembic==1.4.3
