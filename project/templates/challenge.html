@@ -43,12 +43,12 @@
                     {{ wtf.form_field(form.flag, class="form-control") }}<br>
                     {% set id_submit = "submit" + chal.id|string %}
                     <button class="btn btn-primary" type="submit" name="submit_btn" value={{ id_submit }}>Submit</button>
+                    {% if chal.writeup_path is not none %}
+                      {% set writeup_file_path = "writeup/" + chal.writeup_path %}
+                      <a role="button" style="float:right;" class="btn btn-danger" href="{{ url_for('static', filename=writeup_file_path) }}">Write-up</a>
+                    {% else %}{% endif %}
                   </p>
                 </form>
-                {% if chal.writeup_path is not none %}
-                  {% set writeup_file_path = "writeup/" + chal.writeup_path %}
-                  <a role="button" class="btn btn-danger" href="{{ url_for('static', filename=writeup_file_path) }}">Hint: write-up</a>
-                {% else %}{% endif %}
               </div>
             </div>
           </div>

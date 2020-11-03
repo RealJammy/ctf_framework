@@ -18,10 +18,31 @@
           <li>forensics</li>
           <li>misc</li>
         </dl>
-      <p class="text-white">
-        Please take a look around, and try not to break anything :)<br>
-        I like to hang about on discord (and when this starts, there may be a discord server open), so there'll be more information to come!
+      <p class="text-white text-left">
+        The competition will be running for a certain period of time. The aim of a CTF is to gain flags and score points. The more points you score, the higher you climb up the <a href="{{ url_for('scoreboard') }}" class="text-warning">leaderboard</a>.<br>
+        To score points, you have to submit flags. Flags are just a string of characters, such as <code style="background-color:#85e3b1; color:#17206d">flag{sanity_check_fl4g}</code><br>
+        Flags are in the format <code style="background-color:#85e3b1; color:#17206d">flag{.*}</code>
       </p>
     </div>
-</div>
+  </div><br>
+  <div class="card text-center offset-md-1" style="width: 75%">
+    <div class="card-header font-weight-bold bg-warning">
+      Rules
+    </div>
+    <div class="card-body bg-secondary text-white">
+      <p class="card-text">
+        We can't let you just running around wild now, can we. Let's set out some rules so that this platform can (hopefully) run smoothly.
+        <ol class="text-left">
+          <li>
+            Please don't bruteforce any flags. That takes the fun out of the CTF. It also means that you don't learn any new techniques
+          </li>
+          <li>
+            Please don't share any flags. Flag sharing is prohibited, and will result in a ban from the platform.
+          </li>
+          <li>Don't attack the infrastrcuture</li>
+        </ol>
+      </p>
+    </div>
+  </div><br>
+
 {% endblock %}
