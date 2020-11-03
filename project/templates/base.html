@@ -33,6 +33,9 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('challenges') }}">Challenges</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('rules') }}">Rules</a>
+        </li>
       </ul>
       <ul class="navbar-nav mr-auto">
         {% if current_user.is_anonymous %}

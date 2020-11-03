@@ -136,3 +136,8 @@ def challenges():
             flash("Invalid flag", "danger")
             return redirect(url_for("challenges"))
     return render_template("challenge.html", title="Challenges", challenges=all_challenges, form=form)
+
+@project.route("/route")
+@login_required
+def rules():
+    return render_template("rules.html", title="Rules")
