@@ -14,7 +14,7 @@ class Team(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(128), index=True, unique=True)
     email = db.Column(db.String(64), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
+    password_hash = db.Column(db.String(256))
     score = db.Column(db.Integer, default=0)
     about_us = db.Column(db.String(400), default="Nothing to see here")
     flags = db.relationship("Challenge", secondary=association_table)
@@ -42,6 +42,7 @@ class Challenge(db.Model):
     flag = db.Column(db.String(64))
     category = db.Column(db.String(32))
     file_path = db.Column(db.String(256))
+    writeup_path = db.Column(db.String(256))
 
     def __repr__(self):
         return f"{self.title}"

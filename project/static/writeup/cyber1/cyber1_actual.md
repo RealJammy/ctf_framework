@@ -1,6 +1,6 @@
 # Euan's Cyber1 Write-up
 
-This is a write-up of the 1st challenge that has been tasked for 2021 Warwick applicants. This is my intended solution for the challenge. The flag is located in the `lastpass_pwd.txt` file which we eventually find.
+This is a write-up of the 1st challenge that has been tasked for the 2021 Warwick applicants. This is my intended solution for the challenge. The flag is located in the `lastpass_pwd.txt` file which we eventually find.
 
 At the end, there is a TL;DR to recap of the steps taken and the techniques learnt / used.
 
@@ -20,6 +20,7 @@ challenge.jpg: JPEG image data, JFIF standard 1.01, resolution (DPI), density 72
 ```
 So the header tells us that it's a jpeg, which lines up with the extension provided. Everything else seems to be normal. Let's open it and see what we find.
 
+
 ![QR code](../../challenges/cyber1/challenge.jpg)
 
 So we get a QR code ... let's follow it. Using [Zxing](https://zxing.org/w/decode), we get a URI out of it ... `https://www.youtube.com/watch?v=dQw4w9WgXcQ`. I wonder where this leads us ...
@@ -37,7 +38,7 @@ So what does "deeper" look like?
 - Manipulating the hex bytes to gain a flag
 - Hex data might have been labelled incorrectly, ie. some binary has replace hex
 
-The file loads up perfectly fine, so I feel like it's not going to be the last point, as usually that would provide an error, such as "can't open the file, something is wrong with the hex". SO we've got options 1 and 2 to take a look at. I'm going to start with the steg portion, because we open up a can of worms here with multiple different paths.
+The file loads up perfectly fine, so I feel like it's not going to be the last point, as usually that would provide an error, such as "can't open the file, something is wrong with the hex". So we've got options 1 and 2 to take a look at. I'm going to start with the steg portion, because we open up a can of worms here with multiple different paths.
 
 Let's take a look at the strings and see what we can find:
 ```bash
@@ -65,7 +66,7 @@ Putting this here so that I don\'t forget
 euan:$1$6fb42da0e32e07b61c9f0251fe627a9c:1001:1001:::/bin/bash
 ...
 ```
-Wow, so that's gained some interesting features. SO reading those XML tags, we have some additional metadata, and we also have what seems to be a file labelled `lastpass_pwd.txtUT`. We also have a description: `Did I forget to pwd protect the files ... uhhhhhhh`. We also gain a hash as well. Interesting .... Let's take a look at the metadata to see if there's any more useful things.
+Wow, so that's gained some interesting features. Reading those XML tags, we have some additional metadata, and we also have what seems to be a file labelled `lastpass_pwd.txtUT`. We also have a description: `Did I forget to pwd protect the files ... uhhhhhhh`. We also gain a hash as well. Interesting .... Let's take a look at the metadata to see if there's any more useful things.
 ```bash
  euan@euanb26  cyber1  exiftool challenge.jpg
  ...
