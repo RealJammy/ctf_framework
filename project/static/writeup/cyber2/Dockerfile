@@ -4,7 +4,7 @@ ARG HOMEDIR=/home/ctf
 
 RUN apt-get update
 RUN apt-get install -y gcc gcc-multilib socat
-sudo dock
+
 ENV HOMEDIR=$HOMEDIR
 RUN useradd -d $HOMEDIR -m -p ctf -s /bin/bash ctf
 RUN echo "ctf:ctf" | chpasswd
