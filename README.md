@@ -3,6 +3,8 @@
 
 Some documentation will be written sometime soon to see how this all works and where everything is.
 
+This is currently live at `http://18.130.159.91:8080` and will be up until sometime later tonight.
+
 However, if you want to get this set up locally, please follow these steps:
 ```bash
 $ git clone https://github.com/EuanB26/ctf_framework.git
