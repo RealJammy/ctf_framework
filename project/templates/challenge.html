@@ -8,7 +8,11 @@
       {%- for chal in challenges %}
       <div class="col-sm-6">
         <div class="card border-dark">
+          {% if form.flag == true %}
+          <div class="card-header" id="{{ chal.title }}" name="{{ chal.title }}" style="background-color: green">
+          {% else %}
           <div class="card-header" id="{{ chal.title }}" name="{{ chal.title }}">
+          {% endif %}
             <h5 class="text-center">
               <a class="btn btn-link" data-toggle="collapse" href="#collapse{{ chal.title }}">
                 {{ chal.title }}

